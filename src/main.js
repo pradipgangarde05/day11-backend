@@ -63,11 +63,32 @@ async function addTodo(req, res) {
   res.json({ opr: "success" });
 }
 
+async function addUserRecord(req, res) {
+  const uri = "mongodb://127.0.0.1:27017";
+  const client = new MongoClient(uri);
+
+  const db = client.db("project");
+  const messageColl = db.collection("user");
+
+  let inputDoc = {
+    username: req.query.username,
+    password: req.query.password,
+    email: req.query.email,
+    mobile: req.query.mobile,
+  };
+  await messageColl.insertOne(inputDoc);
+
+  await client.close();
+
+  res.json({ opr: "success" });
+}
+
 // http://localhost:4000/addrecord
 app.get("/addrecord", addrecord);
 app.get("/findAll", findAllMessage);
 app.post("/hello", helloPost);
 app.get("/addtodo", addTodo);
+app.get("/adduser", addUserRecord);
 
 // http://localhost:4000/
 app.listen(4000);
